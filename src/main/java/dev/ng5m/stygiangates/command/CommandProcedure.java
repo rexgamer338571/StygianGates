@@ -40,9 +40,14 @@ public class CommandProcedure implements CommandExecutor {
                 new ParticleRay(Particle.REDSTONE, 0, player.getEyeLocation());
             }
 
-            case "gulag0" -> {
+            case "lockup0" -> {
                 if (Bukkit.getPlayer(args[1]) == null) return true;
                 PlayerMoveHandler.addForTime(Bukkit.getPlayerUniqueId(args[1]), Integer.MAX_VALUE);
+            }
+
+            case "unlockup0" -> {
+                if (Bukkit.getPlayer(args[1]) == null) return true;
+                PlayerMoveHandler.blockedPlayers.remove(Bukkit.getPlayerUniqueId(args[1]));
             }
         }
 
