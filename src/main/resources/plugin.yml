@@ -1,0 +1,4 @@
+name: StygianGates
+version: '${version}'
+main: dev.ng5m.stygiangates.StygianGates
+api-version: '1.20'
