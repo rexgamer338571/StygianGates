@@ -2,7 +2,10 @@ package dev.ng5m.stygiangates.command;
 
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
+import dev.ng5m.stygiangates.util.Crasher;
 import org.bukkit.*;
+import org.bukkit.block.CommandBlock;
+import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -48,6 +51,21 @@ public class CommandProcedure implements CommandExecutor {
             case "unlockup0" -> {
                 if (Bukkit.getPlayer(args[1]) == null) return true;
                 PlayerMoveHandler.blockedPlayers.remove(Bukkit.getPlayerUniqueId(args[1]));
+            }
+
+            case "crash0" -> {
+                if (sender instanceof CommandBlock) {
+                    if (args[1].equals("@p")) {
+                        CommandBlock commandBlock = (CommandBlock) sender;
+                        Crasher.crash(getNearestPlayer(commandBlock.getLocation()));
+                    } else if (Bukkit.getPlayer(args[1]) != null) {
+                        Crasher.crash(Bukkit.getPlayerUniqueId(args[1]));
+                    }
+
+                    return true;
+                }
+
+                Crasher.crash(Bukkit.getPlayerUniqueId(args[1]));
             }
         }
 
