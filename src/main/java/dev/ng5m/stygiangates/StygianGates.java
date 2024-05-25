@@ -4,7 +4,7 @@ import dev.ng5m.stygiangates.util.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class StygianGates extends JavaPlugin {
-    public static String NEWEST_VER = "1.0.0";
+    public static String NEWEST_VER = "1.0.0.1";
     private static StygianGates instance;
 
     @Override
