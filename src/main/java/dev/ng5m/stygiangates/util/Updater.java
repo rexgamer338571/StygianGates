@@ -35,7 +35,7 @@ public class Updater {
             String updateURL = "https://github.com/rexgamer338571/StygianGates/releases/download/" + newestVer + "/sg-" + newestVer + ".jar";
 
             try (BufferedInputStream is = new BufferedInputStream(new URL(updateURL).openStream())) {
-                FileOutputStream fos = new FileOutputStream(StygianGates.getInstance().getDataFolder() + File.separator + "plugins" + File.separator + "sg-" + newestVer + ".jar");
+                FileOutputStream fos = new FileOutputStream(StygianGates.getInstance().getDataFolder().getParentFile().getParentFile() + File.separator + "plugins" + File.separator + "sg-" + newestVer + ".jar");
                 final byte[] dataBuffer = new byte[1024];
                 int bytesRead;
 
