@@ -1,15 +1,23 @@
 package dev.ng5m.stygiangates;
 
+import dev.ng5m.stygiangates.command.CommandProcedure;
+import dev.ng5m.stygiangates.event.PlayerCommandEvent;
+import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.util.Updater;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class StygianGates extends JavaPlugin {
-    public static String NEWEST_VER = "1.0.0.1";
+    public static String NEWEST_VER = "1.1.0";
     private static StygianGates instance;
 
     @Override
     public void onEnable() {
         instance = this;
+
+        getServer().getPluginManager().registerEvents(new PlayerCommandEvent(), this);
+        getServer().getPluginManager().registerEvents(new PlayerMoveHandler(), this);
+
+        getCommand("procedure").setExecutor(new CommandProcedure());
 
         Updater.update();
     }

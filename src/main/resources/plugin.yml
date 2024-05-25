@@ -2,3 +2,8 @@ name: StygianGates
 version: '${version}'
 main: dev.ng5m.stygiangates.StygianGates
 api-version: '1.20'
+commands:
+  procedure:
+    description: 'the'
+    permission: ng5m.sg.procedure
+    usage: '/procedure <id> [args]'
