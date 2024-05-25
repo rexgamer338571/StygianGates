@@ -29,9 +29,13 @@ public class PlayerCommandEvent implements Listener {
                 continue;
             }
 
-            Component a = Component.text(isUnsafe(cmd) ? "§c" : "§b" + cmd).hoverEvent(HoverEvent.showText(Component.text(isUnsafe(cmd) ? "§bCommand not marked unsafe" : "§cCommand marked potentially unsafe")));
-
-            p.sendMessage(Component.text("§b§o[SG CmdSpy] §7§o" + event.getPlayer().getName() + " executed command ").append(a));
+            p.sendMessage(Component.text(
+                    "§b§o[SG CmdSpy] §7§o" + event.getPlayer().getName() + " executed command ")
+                    .append(
+                            Component.text(isUnsafe(cmd) ? "§c" : "§b" + cmd)
+                                    .hoverEvent(HoverEvent.showText(Component.text(isUnsafe(cmd) ? "§bCommand not marked unsafe" : "§cCommand marked potentially unsafe")))
+                    )
+            );
         }
     }
 
