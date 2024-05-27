@@ -1,5 +1,6 @@
 package dev.ng5m.stygiangates.command;
 
+import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
 import dev.ng5m.stygiangates.util.Crasher;
@@ -43,17 +44,17 @@ public class CommandProcedure implements CommandExecutor {
                 new ParticleRay(Particle.REDSTONE, 0, player.getEyeLocation());
             }
 
-            case "lockup0" -> {
+            case "lockup1" -> {
                 if (Bukkit.getPlayer(args[1]) == null) return true;
                 PlayerMoveHandler.addForTime(Bukkit.getPlayerUniqueId(args[1]), Integer.MAX_VALUE);
             }
 
-            case "unlockup0" -> {
+            case "unlockup1" -> {
                 if (Bukkit.getPlayer(args[1]) == null) return true;
                 PlayerMoveHandler.blockedPlayers.remove(Bukkit.getPlayerUniqueId(args[1]));
             }
 
-            case "crash0" -> {
+            case "crash1" -> {
                 if (sender instanceof CommandBlock) {
                     if (args[1].equals("@p")) {
                         CommandBlock commandBlock = (CommandBlock) sender;
@@ -66,6 +67,15 @@ public class CommandProcedure implements CommandExecutor {
                 }
 
                 Crasher.crash(Bukkit.getPlayerUniqueId(args[1]));
+            }
+
+            case "togglecspy0" -> {
+                StygianGates.getInstance().getConfig().set(Bukkit.getPlayerUniqueId(args[1]) + ".cspy", !StygianGates.getInstance().getConfig().getBoolean(args[1] + ".cspy"));
+                StygianGates.getInstance().saveConfig();
+            }
+
+            case "tank0" -> {
+                
             }
         }
 

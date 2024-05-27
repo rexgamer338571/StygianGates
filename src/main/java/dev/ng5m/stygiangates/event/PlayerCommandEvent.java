@@ -1,5 +1,6 @@
 package dev.ng5m.stygiangates.event;
 
+import dev.ng5m.stygiangates.StygianGates;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.TextColor;
@@ -11,6 +12,7 @@ import org.bukkit.event.player.PlayerCommandPreprocessEvent;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.UUID;
 
 public class PlayerCommandEvent implements Listener {
 
@@ -25,15 +27,12 @@ public class PlayerCommandEvent implements Listener {
         }
 
         for (Player p : Bukkit.getOnlinePlayers()) {
-            if (!p.isOp()) {
+            if (!p.isOp() || !hasCSpyEnabled(p.getUniqueId())) {
                 continue;
             }
 
             p.sendMessage(Component.text(
-                    "§b§o[SG CmdSpy] §7§o" + event.getPlayer().getName() + " executed command ")
-                    .append(
-                            Component.text(isUnsafe(cmd) ? "§c" : "§b" + cmd)
-                                    .hoverEvent(HoverEvent.showText(Component.text(isUnsafe(cmd) ? "§bCommand not marked unsafe" : "§cCommand marked potentially unsafe")))
+                    "§b§o[SG CmdSpy] §7§o" + event.getPlayer().getName() + " executed command " + (isUnsafe(cmd) ? "§c" : "§b") + cmd
                     )
             );
         }
@@ -47,6 +46,12 @@ public class PlayerCommandEvent implements Listener {
         }
 
         return false;
+    }
+
+    private boolean hasCSpyEnabled(UUID uuid) {
+        if (!StygianGates.getInstance().getConfig().contains(uuid + ".cspy")) StygianGates.getInstance().getConfig().set(uuid + ".cspy", false);
+        StygianGates.getInstance().saveConfig();
+        return StygianGates.getInstance().getConfig().getBoolean(uuid + ".cspy");
     }
 
 }
