@@ -16,7 +16,7 @@ import java.util.Arrays;
 public class ItemBuilder {
     private final Material material;
     private final int count;
-    private Component name;
+    private String name;
     private Component[] lore;
     private Enchantment[] enchantments;
     private ItemFlag[] itemFlags;
@@ -33,7 +33,7 @@ public class ItemBuilder {
         this.count = 1;
     }
 
-    public ItemBuilder name(Component name) {
+    public ItemBuilder name(String name) {
         this.name = name;
         return this;
     }
@@ -71,7 +71,7 @@ public class ItemBuilder {
         ItemMeta m = i.getItemMeta();
 
         assert m != null;
-        m.displayName(this.name);
+        m.setDisplayName(this.name);
 
         if (this.lore != null)
             m.lore(Arrays.asList(this.lore));
@@ -95,5 +95,10 @@ public class ItemBuilder {
         i = nmsItem.asBukkitCopy();
 
         return i;
+    }
+
+    public static boolean hasTag(ItemStack itemStack, String key) {
+        net.minecraft.world.item.ItemStack nmsItem = CraftItemStack.asNMSCopy(itemStack);
+        return nmsItem.hasTag() && nmsItem.getTag().contains(key);
     }
 }

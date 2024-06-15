@@ -4,6 +4,7 @@ import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
 import dev.ng5m.stygiangates.util.Crasher;
+import dev.ng5m.stygiangates.util.Tank;
 import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
@@ -41,7 +42,7 @@ public class CommandProcedure implements CommandExecutor {
                 player.teleport(new Location(overworld, 0.5, 23, 96.5, 0, 0));
                 PlayerMoveHandler.addForTime(player.getUniqueId(), 20 * 5);
 
-                new ParticleRay(Particle.REDSTONE, 0, player.getEyeLocation());
+                ParticleRay.ray(Particle.FLAME, 0, player);
             }
 
             case "lockup1" -> {
@@ -74,9 +75,7 @@ public class CommandProcedure implements CommandExecutor {
                 StygianGates.getInstance().saveConfig();
             }
 
-            case "tank0" -> {
-                
-            }
+            case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }
 
         return true;

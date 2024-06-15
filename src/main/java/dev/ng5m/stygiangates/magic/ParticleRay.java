@@ -1,35 +1,35 @@
 package dev.ng5m.stygiangates.magic;
 
 import dev.ng5m.stygiangates.StygianGates;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 public class ParticleRay {
 
-    public ParticleRay(Particle particle, int delay, Location start) {
-        new BukkitRunnable() {
-            final Vector increase = start.getDirection();
+    public static int ray(Particle particle, int delay, Player player) {
+        final Location l = player.getEyeLocation().clone();
+        final Vector[] dir = {l.getDirection()};
+        final Vector offset = dir[0].clone().multiply(1);
 
-            int counter;
-
+        return new BukkitRunnable() {
             @Override
             public void run() {
-                if (counter == 40) {
+                dir[0] = player.getEyeLocation().getDirection();
+
+                l.add(offset);
+
+                if (!l.getWorld().getBlockAt(l).getType().isEmpty() || l.distance(player.getEyeLocation()) >= 30) {
                     cancel();
-                } else {
-                    Location p = start.add(increase);
-                    if (p.getBlock().getType().isSolid()) {
-                        cancel();
-                    }
-
-                    p.getWorld().spawnParticle(particle, p, 1);
-
-                    counter++;
                 }
+
+                l.getWorld().spawnParticle(particle, l, 0);
             }
-        }.runTaskTimer(StygianGates.getInstance(), delay, 0);
+
+        }.runTaskTimer(StygianGates.getInstance(), 0, 1).getTaskId();
     }
 
 }
