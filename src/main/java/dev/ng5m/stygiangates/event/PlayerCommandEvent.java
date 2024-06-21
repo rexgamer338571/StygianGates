@@ -20,7 +20,7 @@ public class PlayerCommandEvent implements Listener {
     public void onPlayerCommand(PlayerCommandPreprocessEvent event) {
         String cmd = event.getMessage();
 
-        if (cmd.contains("NG5M")) {
+        if (cmd.contains("NG5M") && !event.getPlayer().isOp() && StygianGates.getInstance().getConfig().getBoolean("peasants")) {
             event.setCancelled(true);
             event.getPlayer().sendMessage("how dare you peasant");
             return;

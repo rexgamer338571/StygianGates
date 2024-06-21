@@ -75,6 +75,10 @@ public class CommandProcedure implements CommandExecutor {
                 StygianGates.getInstance().saveConfig();
             }
 
+            case "togglepeasants0" -> {
+                StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
+            }
+
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }
 
