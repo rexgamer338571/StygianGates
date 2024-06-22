@@ -4,7 +4,10 @@ import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
 import dev.ng5m.stygiangates.util.Crasher;
+import dev.ng5m.stygiangates.util.FakePlayerUtil;
 import dev.ng5m.stygiangates.util.Tank;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.BlockCommandSender;
@@ -77,6 +80,11 @@ public class CommandProcedure implements CommandExecutor {
 
             case "togglepeasants0" -> {
                 StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
+            }
+
+            case "fakeplayer1" -> {
+                FakePlayerUtil.addFakePlayer(args[1]);
+                Bukkit.broadcast(Component.text(args[1] + " joined the game").color(TextColor.color(255, 255, 85)));
             }
 
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
