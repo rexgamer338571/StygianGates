@@ -82,9 +82,28 @@ public class CommandProcedure implements CommandExecutor {
                 StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
             }
 
-            case "fakeplayer1" -> {
-                FakePlayerUtil.addFakePlayer(args[1]);
-                Bukkit.broadcast(Component.text(args[1] + " joined the game").color(TextColor.color(255, 255, 85)));
+            case "fakeplayer2" -> {
+                switch (args[2]) {
+                    case "add" -> {
+                        FakePlayerUtil.addFakePlayer(args[1]);
+                        Bukkit.broadcast(Component.text(args[1] + " joined the game").color(TextColor.color(255, 255, 85)));
+                    }
+
+                    case "remove" -> {
+                        FakePlayerUtil.removeFakePlayer(args[1]);
+                        Bukkit.broadcast(Component.text(args[1] + " left the game").color(TextColor.color(255, 255, 85)));
+                    }
+
+                    case "chat" -> {
+                        StringBuilder s = new StringBuilder();
+
+                        for (int i = 3; i < args.length; i++) {
+                            s.append(args[i]);
+                        }
+
+                        Bukkit.broadcast(Component.text("<" + args[1] + "> " + s));
+                    }
+                }
             }
 
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());

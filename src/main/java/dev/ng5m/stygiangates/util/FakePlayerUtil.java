@@ -5,7 +5,10 @@ import com.mojang.authlib.properties.Property;
 import dev.ng5m.stygiangates.StygianGates;
 import io.netty.buffer.Unpooled;
 import net.minecraft.network.FriendlyByteBuf;
+import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
 import net.minecraft.network.protocol.game.ClientboundRotateHeadPacket;
 import net.minecraft.server.MinecraftServer;
@@ -26,36 +29,52 @@ import org.json.simple.parser.ParseException;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.lang.reflect.Field;
+import java.lang.reflect.Modifier;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.UUID;
 
 public class FakePlayerUtil {
+    private static final HashMap<String, ServerPlayer> fakePlayers = new HashMap<>();
 
     public static void addFakePlayer(String playerName) {
+        ServerLevel world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
+        MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), playerName);
+
+        gameProfile.getProperties().removeAll("textures");
+        gameProfile.getProperties().put("textures", getSkin(playerName));
+
+        ServerPlayer fakePlayer = new ServerPlayer(nmsServer, world, gameProfile, ClientInformation.createDefault());
+
         for (Player p : Bukkit.getOnlinePlayers()) {
-            CraftPlayer craftPlayer = (CraftPlayer) p;
-            ServerPlayer nmsPlayer = craftPlayer.getHandle();
-            ServerGamePacketListenerImpl connection = nmsPlayer.connection;
+            fakePlayer.connection = ((CraftPlayer) p).getHandle().connection;
 
-            ServerLevel world = ((CraftWorld) p.getWorld()).getHandle();
-            MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
-            GameProfile gameProfile = new GameProfile(UUID.randomUUID(), playerName);
-
-            gameProfile.getProperties().removeAll("textures");
-            gameProfile.getProperties().put("textures", getSkin(playerName));
-
-            ServerPlayer fakePlayer = new ServerPlayer(nmsServer, world, gameProfile, ClientInformation.createDefault());
-
-            fakePlayer.setPosRaw(p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ());
-
-            fakePlayer.connection = nmsPlayer.connection;
-
-            connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer));
-            connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, fakePlayer));
-            connection.send(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, fakePlayer));
+            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer), p);
+            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, fakePlayer), p);
+            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, fakePlayer), p);
         }
 
+        fakePlayers.put(playerName, fakePlayer);
+    }
+
+    public static void removeFakePlayer(String playerName) {
+        for (Player p : Bukkit.getOnlinePlayers()) {
+            ClientboundPlayerInfoRemovePacket packet = new ClientboundPlayerInfoRemovePacket(Collections.singletonList(fakePlayers.get(playerName).getUUID()));
+
+            sendPacket(packet, p);
+        }
+    }
+
+    public static void sendPacket(Packet<?> packet, Player player) {
+        CraftPlayer craftPlayer = (CraftPlayer) player;
+        ServerPlayer nmsPlayer = craftPlayer.getHandle();
+        ServerGamePacketListenerImpl connection = nmsPlayer.connection;
+
+        connection.send(packet);
     }
 
     private static Property getSkin(String name) {
