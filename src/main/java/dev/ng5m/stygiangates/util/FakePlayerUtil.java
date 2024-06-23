@@ -3,14 +3,9 @@ package dev.ng5m.stygiangates.util;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import dev.ng5m.stygiangates.StygianGates;
-import io.netty.buffer.Unpooled;
-import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoRemovePacket;
 import net.minecraft.network.protocol.game.ClientboundPlayerInfoUpdatePacket;
-import net.minecraft.network.protocol.game.ClientboundRotateHeadPacket;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ClientInformation;
 import net.minecraft.server.level.ServerLevel;
@@ -38,7 +33,13 @@ import java.util.HashMap;
 import java.util.UUID;
 
 public class FakePlayerUtil {
-    private static final HashMap<String, ServerPlayer> fakePlayers = new HashMap<>();
+    public static final HashMap<String, ServerPlayer> fakePlayers = new HashMap<>();
+
+    public static void addForPlayer(ServerPlayer fakePlayer, Player p) {
+        sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer), p);
+        sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, fakePlayer), p);
+        sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, fakePlayer), p);
+    }
 
     public static void addFakePlayer(String playerName) {
         ServerLevel world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
@@ -53,9 +54,7 @@ public class FakePlayerUtil {
         for (Player p : Bukkit.getOnlinePlayers()) {
             fakePlayer.connection = ((CraftPlayer) p).getHandle().connection;
 
-            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.ADD_PLAYER, fakePlayer), p);
-            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_LISTED, fakePlayer), p);
-            sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, fakePlayer), p);
+            addForPlayer(fakePlayer, p);
         }
 
         fakePlayers.put(playerName, fakePlayer);
@@ -103,7 +102,7 @@ public class FakePlayerUtil {
 
             r = new Property("textures", prop.get("value").toString(), prop.get("signature").toString());
         } catch (Exception e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
 
         return r;
