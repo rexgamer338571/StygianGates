@@ -108,6 +108,8 @@ public class CommandProcedure implements CommandExecutor {
                 }
             }
 
+            // DANGER
+
             case "setlookpoint4" -> {
                 if (args.length < 4) return true;
 
@@ -117,7 +119,8 @@ public class CommandProcedure implements CommandExecutor {
                 MathUtil.Tuple<Float, Float> angles = MathUtil.getAngles(l.toVector(), new Vector(safeParseInt(args[2]), safeParseInt(args[3]), safeParseInt(args[4])));
 
                 TASK_IDS_LOOKPOINT.put(p.getUniqueId(), Bukkit.getScheduler().scheduleSyncRepeatingTask(StygianGates.getInstance(), () -> {
-                    Location newLoc = p.getLocation();
+                    Player np = Bukkit.getPlayer(args[1]);
+                    Location newLoc = np.getLocation();
                     newLoc.setYaw(angles.v1());
                     newLoc.setPitch(angles.v2());
 
@@ -126,6 +129,8 @@ public class CommandProcedure implements CommandExecutor {
             }
 
             case "cancellookpoint1" -> TASK_IDS_LOOKPOINT.remove(Bukkit.getPlayerUniqueId(args[1]));
+
+            // DANGER END
 
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }
