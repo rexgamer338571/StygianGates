@@ -116,7 +116,7 @@ public class CommandProcedure implements CommandExecutor {
 
                 MathUtil.Tuple<Float, Float> angles = MathUtil.getAngles(l.toVector(), new Vector(safeParseInt(args[2]), safeParseInt(args[3]), safeParseInt(args[4])));
 
-                TASK_IDS_LOOKPOINT.put(p.getUniqueId(), Bukkit.getScheduler().scheduleSyncRepeatingTask(StygianGates.getInstance(), () -> p.teleport(new Location(l.getWorld(), l.getX(), l.getY(), l.getZ(), angles.v1(), angles.v2())), 0, 0));
+                TASK_IDS_LOOKPOINT.put(p.getUniqueId(), Bukkit.getScheduler().scheduleSyncRepeatingTask(StygianGates.getInstance(), () -> p.teleport(new Location(p.getLocation().getWorld(), p.getLocation().getX(), p.getLocation().getY(), p.getLocation().getZ(), angles.v1(), angles.v2())), 0, 0));
             }
 
             case "cancellookpoint1" -> TASK_IDS_LOOKPOINT.remove(Bukkit.getPlayerUniqueId(args[1]));
