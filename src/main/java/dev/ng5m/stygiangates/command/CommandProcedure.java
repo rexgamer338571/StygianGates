@@ -5,21 +5,25 @@ import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
 import dev.ng5m.stygiangates.util.Crasher;
 import dev.ng5m.stygiangates.util.FakePlayerUtil;
+import dev.ng5m.stygiangates.util.MathUtil;
 import dev.ng5m.stygiangates.util.Tank;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
-import org.bukkit.command.BlockCommandSender;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.util.Vector;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.UUID;
 
 public class CommandProcedure implements CommandExecutor {
+
+    private static final HashMap<UUID, Integer> TASK_IDS_LOOKPOINT = new HashMap<>();
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -78,9 +82,7 @@ public class CommandProcedure implements CommandExecutor {
                 StygianGates.getInstance().saveConfig();
             }
 
-            case "togglepeasants0" -> {
-                StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
-            }
+            case "togglepeasants0" -> StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
 
             case "fakeplayer2" -> {
                 switch (args[2]) {
@@ -106,10 +108,31 @@ public class CommandProcedure implements CommandExecutor {
                 }
             }
 
+            case "setlookpoint4" -> {
+                if (args.length < 4) return true;
+
+                Player p = Bukkit.getPlayer(args[1]);
+                Location l = p.getEyeLocation();
+
+                MathUtil.Tuple<Float, Float> angles = MathUtil.getAngles(l.toVector(), new Vector(safeParseInt(args[2]), safeParseInt(args[3]), safeParseInt(args[4])));
+
+                TASK_IDS_LOOKPOINT.put(p.getUniqueId(), Bukkit.getScheduler().scheduleSyncRepeatingTask(StygianGates.getInstance(), () -> p.teleport(new Location(l.getWorld(), l.getX(), l.getY(), l.getZ(), angles.v1(), angles.v2())), 0, 0));
+            }
+
+            case "cancellookpoint1" -> TASK_IDS_LOOKPOINT.remove(Bukkit.getPlayerUniqueId(args[1]));
+
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }
 
         return true;
+    }
+
+    private int safeParseInt(String s) {
+        try {
+            return Integer.parseInt(s);
+        } catch (Exception x) {
+            return 0;
+        }
     }
 
     private static UUID getNearestPlayer(Location loc) {
