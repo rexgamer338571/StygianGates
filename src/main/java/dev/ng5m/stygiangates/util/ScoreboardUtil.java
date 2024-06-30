@@ -25,9 +25,9 @@ public class ScoreboardUtil {
                 "§4§l☠ Deaths: §r" + p.getStatistic(Statistic.DEATHS),
                 "§4§lWools: §r" + StygianGates.safeInt(p.getUniqueId() + "woolsObtained", 0),
                 "",
-                "§6§lGold:§r" + StygianGates.safeInt(p.getUniqueId() + "gold", 0),
+                "§6§lGold: §r" + StygianGates.safeInt(p.getUniqueId() + "gold", 0),
                 "",
-                "§5§lTime Played:§r" + formatPlaytime(p.getStatistic(Statistic.PLAY_ONE_MINUTE)),
+                "§5§lTime Played: §r" + formatPlaytime(p.getStatistic(Statistic.PLAY_ONE_MINUTE)),
                 "§4§l==============="
         );
     }
@@ -35,17 +35,17 @@ public class ScoreboardUtil {
     public static String formatPlaytime(int ticks) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        idk(ticks, stringBuilder, MONTH_TICKS, "mt");
-        idk(ticks, stringBuilder, DAY_TICKS, "d");
-        idk(ticks, stringBuilder, HOUR_TICKS, "h");
-        idk(ticks, stringBuilder, MINUTE_TICKS, "m");
-        idk(ticks, stringBuilder, SECOND_TICKS, "s");
+        idk(ticks, 127, stringBuilder, MONTH_TICKS, "mt");
+        idk(ticks, 30, stringBuilder, DAY_TICKS, "d");
+        idk(ticks, 24, stringBuilder, HOUR_TICKS, "h");
+        idk(ticks, 60, stringBuilder, MINUTE_TICKS, "m");
+        idk(ticks, 60, stringBuilder, SECOND_TICKS, "s");
 
         return stringBuilder.toString();
     }
 
-    private static void idk(int i, StringBuilder sb, double d, String s) {
-        if (i >= d) sb.append(div(i, d)).append(s).append(" ");
+    private static void idk(int i, int mod, StringBuilder sb, double d, String s) {
+        if (i >= d) sb.append(div(i, d) % mod).append(s).append(" ");
     }
 
     private static int div(double dividend, double divisor) {

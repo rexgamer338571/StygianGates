@@ -15,7 +15,7 @@ import java.util.UUID;
 import static java.lang.Math.ceil;
 
 public final class StygianGates extends JavaPlugin {
-    public static String NEWEST_VER = "1.5";
+    public static String NEWEST_VER = "1.5.0.1";
     private static StygianGates instance;
     public static final Map<UUID, FastBoard> boards = new HashMap<>();
 
