@@ -1,8 +1,11 @@
 package dev.ng5m.stygiangates.event;
 
+import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.util.FakePlayerUtil;
 import dev.ng5m.stygiangates.util.ScoreboardUtil;
+import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
+import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -12,14 +15,17 @@ public class PlayerJoinHandler implements Listener {
 
     @EventHandler
     public void onPlayerJoin(PlayerJoinEvent event) {
+        Player player = event.getPlayer();
+
         for (String key : FakePlayerUtil.fakePlayers.keySet()) {
-            FakePlayerUtil.addForPlayer(FakePlayerUtil.fakePlayers.get(key), event.getPlayer());
+            FakePlayerUtil.addForPlayer(FakePlayerUtil.fakePlayers.get(key), player);
         }
 
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            ScoreboardUtil.setForPlayer(p);
-            ScoreboardUtil.update(p);
-        }
+        FastBoard board = new FastBoard(player);
+
+        board.updateTitle("§5§l- ★ Stygian Gates ★ -");
+
+        StygianGates.boards.put(player.getUniqueId(), board);
     }
 
 }
