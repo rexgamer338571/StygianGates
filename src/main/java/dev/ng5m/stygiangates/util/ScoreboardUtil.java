@@ -35,11 +35,21 @@ public class ScoreboardUtil {
     public static String formatPlaytime(int ticks) {
         StringBuilder stringBuilder = new StringBuilder();
 
-        idk(ticks, 127, stringBuilder, MONTH_TICKS, "mt");
-        idk(ticks, 30, stringBuilder, DAY_TICKS, "d");
-        idk(ticks, 24, stringBuilder, HOUR_TICKS, "h");
-        idk(ticks, 60, stringBuilder, MINUTE_TICKS, "m");
-        idk(ticks, 60, stringBuilder, SECOND_TICKS, "s");
+        int seconds = div(ticks, SECOND_TICKS) % 60;
+
+        int minutes_ = div(ticks, MINUTE_TICKS) % 60;
+        int minutes = seconds == 0 && ticks <= MINUTE_TICKS ? minutes_ + 1 : minutes_;
+
+        int hours_ = div(ticks, HOUR_TICKS) % 24;
+        int hours = minutes == 0 && ticks <= HOUR_TICKS ? hours_ + 1 : hours_;
+
+        int days_ = div(ticks, DAY_TICKS) % 30;
+        int days = hours == 0 && ticks <= DAY_TICKS ? days_ + 1 : days_;
+
+        int months_ = div(ticks, MONTH_TICKS);
+        int months = days == 0 && ticks <= MONTH_TICKS ? months_ + 1 : months_;
+
+        stringBuilder.append(months == 0 ? "" : months + "mt ").append(days == 0 ? "" : days + "d ").append(hours == 0 ? "" : hours + "h ").append(minutes == 0 ? "" : minutes + "m ").append(seconds == 0 ? "" : seconds + "s ");
 
         return stringBuilder.toString();
     }
