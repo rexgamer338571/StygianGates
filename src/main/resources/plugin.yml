@@ -7,3 +7,5 @@ commands:
     description: 'the'
     permission: ng5m.sg.procedure
     usage: '/procedure <id> [args]'
+  spawn:
+    usage: '/spawn'
