@@ -3,12 +3,17 @@ package dev.ng5m.stygiangates.command;
 import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
-import dev.ng5m.stygiangates.util.Crasher;
-import dev.ng5m.stygiangates.util.FakePlayerUtil;
-import dev.ng5m.stygiangates.util.MathUtil;
-import dev.ng5m.stygiangates.util.Tank;
+import dev.ng5m.stygiangates.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
+import net.minecraft.core.Holder;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
+import net.minecraft.network.protocol.game.ClientboundSoundPacket;
+import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
+import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.phys.Vec3;
 import org.bukkit.*;
 import org.bukkit.block.CommandBlock;
 import org.bukkit.command.Command;
@@ -24,6 +29,7 @@ import java.util.UUID;
 public class CommandProcedure implements CommandExecutor {
 
     private static final HashMap<UUID, Integer> TASK_IDS_LOOKPOINT = new HashMap<>();
+    public static int entityId = Integer.MAX_VALUE - (Short.MAX_VALUE * 14);
 
     @Override
     public boolean onCommand(@NotNull CommandSender sender, @NotNull Command command, @NotNull String label, @NotNull String[] args) {
@@ -131,6 +137,34 @@ public class CommandProcedure implements CommandExecutor {
             case "cancellookpoint1" -> TASK_IDS_LOOKPOINT.remove(Bukkit.getPlayerUniqueId(args[1]));
 
             // DANGER END
+
+            case "packet" -> {
+                Player p = Bukkit.getPlayer(args[2]);
+
+                if (p == null) return true;
+
+                Location l = p.getLocation();
+
+                switch (args[1]) {
+                    case "entity" -> {
+                        EntityType<?> entityType = (EntityType<?>) PacketUtil.valueOrNull(EntityType.class, EntityType.ZOMBIE, args[4]);
+
+                        entityId -= 1;
+
+                        PacketUtil.times(safeParseInt(args[3]), () -> {
+                            ClientboundAddEntityPacket packet = new ClientboundAddEntityPacket(entityId, UUID.randomUUID(), l.getX(), l.getY() + 10, l.getZ(), 0, 0, entityType, 0, new Vec3(0, 0, 0), 0);
+                            PacketUtil.send(p, packet);
+                            entityId -= 1;
+                        });
+                    }
+
+                    case "sounds" -> {
+                        SoundEvent soundEvent = (SoundEvent) PacketUtil.valueOrNull(SoundEvents.class, SoundEvents.ALLAY_AMBIENT_WITH_ITEM, args[4]);
+
+                        PacketUtil.sendTimes(p, new ClientboundSoundPacket(Holder.direct(soundEvent), SoundSource.AMBIENT, l.getX(), l.getY(), l.getZ(), Float.MAX_VALUE, 0f, 0), safeParseInt(args[3]));
+                    }
+                }
+            }
 
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }

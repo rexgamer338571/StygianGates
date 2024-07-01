@@ -1,7 +1,6 @@
 package dev.ng5m.stygiangates;
 
-import dev.ng5m.stygiangates.command.CommandProcedure;
-import dev.ng5m.stygiangates.command.CommandSpawn;
+import dev.ng5m.stygiangates.command.*;
 import dev.ng5m.stygiangates.event.*;
 import dev.ng5m.stygiangates.util.ScoreboardUtil;
 import dev.ng5m.stygiangates.util.Updater;
@@ -15,10 +14,8 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-import static java.lang.Math.ceil;
-
 public final class StygianGates extends JavaPlugin {
-    public static String NEWEST_VER = "1.5.1";
+    public static String NEWEST_VER = "1.5.3.1";
     private static StygianGates instance;
     public static final Map<UUID, FastBoard> boards = new HashMap<>();
 
@@ -38,6 +35,7 @@ public final class StygianGates extends JavaPlugin {
 
         Objects.requireNonNull(getCommand("procedure")).setExecutor(new CommandProcedure());
         Objects.requireNonNull(getCommand("spawn")).setExecutor(new CommandSpawn());
+        Objects.requireNonNull(getCommand("version")).setExecutor(new CommandVersion());
 
         getServer().getScheduler().runTaskTimer(this, () -> {
             for (FastBoard board : boards.values()) {

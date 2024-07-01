@@ -623,7 +623,7 @@ public abstract class FastBoardBase<T> {
         return score < lines.size() ? lines.get(lines.size() - score - 1) : null;
     }
 
-    protected void sendObjectivePacket(ObjectiveMode mode) throws Throwable {
+    protected void  sendObjectivePacket(ObjectiveMode mode) throws Throwable {
         Object packet = PACKET_SB_OBJ.invoke();
 
         setField(packet, String.class, this.id);

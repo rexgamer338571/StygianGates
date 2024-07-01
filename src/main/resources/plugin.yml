@@ -8,4 +8,11 @@ commands:
     permission: ng5m.sg.procedure
     usage: '/procedure <id> [args]'
   spawn:
+    permission: ng5m.sg.spawn
     usage: '/spawn'
+  version:
+    description: 'version'
+    permission: ng5m.sg.version
+    usage: '/version /v'
+    aliases:
+      - v
