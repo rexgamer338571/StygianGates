@@ -41,13 +41,13 @@ public class FakePlayerUtil {
         sendPacket(new ClientboundPlayerInfoUpdatePacket(ClientboundPlayerInfoUpdatePacket.Action.UPDATE_DISPLAY_NAME, fakePlayer), p);
     }
 
-    public static void addFakePlayer(String playerName) {
+    public static void addFakePlayer(String tabListName) {
         ServerLevel world = ((CraftWorld) Bukkit.getWorlds().get(0)).getHandle();
         MinecraftServer nmsServer = ((CraftServer) Bukkit.getServer()).getServer();
-        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), playerName);
+        GameProfile gameProfile = new GameProfile(UUID.randomUUID(), tabListName);
 
         gameProfile.getProperties().removeAll("textures");
-        gameProfile.getProperties().put("textures", getSkin(playerName));
+        gameProfile.getProperties().put("textures", getSkin(tabListName));
 
         ServerPlayer fakePlayer = new ServerPlayer(nmsServer, world, gameProfile, ClientInformation.createDefault());
 
@@ -57,7 +57,7 @@ public class FakePlayerUtil {
             addForPlayer(fakePlayer, p);
         }
 
-        fakePlayers.put(playerName, fakePlayer);
+        fakePlayers.put(tabListName, fakePlayer);
     }
 
     public static void removeFakePlayer(String playerName) {

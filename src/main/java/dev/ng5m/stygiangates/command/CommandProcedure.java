@@ -90,26 +90,26 @@ public class CommandProcedure implements CommandExecutor {
 
             case "togglepeasants0" -> StygianGates.getInstance().getConfig().set("peasants", StygianGates.getInstance().getConfig().contains("peasants") && !StygianGates.getInstance().getConfig().getBoolean("peasants"));
 
-            case "fakeplayer2" -> {
+            case "fakeplayer4" -> {
                 switch (args[2]) {
                     case "add" -> {
-                        FakePlayerUtil.addFakePlayer(args[1]);
+                        FakePlayerUtil.addFakePlayer(args[3]);
                         Bukkit.broadcast(Component.text(args[1] + " joined the game").color(TextColor.color(255, 255, 85)));
                     }
 
                     case "remove" -> {
-                        FakePlayerUtil.removeFakePlayer(args[1]);
+                        FakePlayerUtil.removeFakePlayer(args[3]);
                         Bukkit.broadcast(Component.text(args[1] + " left the game").color(TextColor.color(255, 255, 85)));
                     }
 
                     case "chat" -> {
                         StringBuilder s = new StringBuilder();
 
-                        for (int i = 3; i < args.length; i++) {
+                        for (int i = 2; i < args.length; i++) {
                             s.append(args[i]);
                         }
 
-                        Bukkit.broadcast(Component.text("<" + args[1] + "> " + s));
+                        Bukkit.broadcastMessage(s.toString().replace('&', '§')); /* not using adventure because of color codes */
                     }
                 }
             }
