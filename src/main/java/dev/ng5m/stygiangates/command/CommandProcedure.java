@@ -139,7 +139,7 @@ public class CommandProcedure implements CommandExecutor {
             // DANGER END
 
             case "packet" -> {
-                Player p = Bukkit.getPlayer(args[2]);
+                Player p = args[2].equals("@p") && sender instanceof CommandBlock commandBlock ? Bukkit.getPlayer(getNearestPlayer(commandBlock.getLocation())) : Bukkit.getPlayer(args[2]);
 
                 if (p == null) return true;
 
