@@ -6,6 +6,11 @@ import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Statistic;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static java.lang.Math.ceil;
 
 public class ScoreboardUtil {
@@ -15,25 +20,13 @@ public class ScoreboardUtil {
     static final int SECONDS_IN_MONTH = (int) (30.44 * SECONDS_IN_DAY);
 
     public static void update(FastBoard board) {
+        if (!(boolean) StygianGates.safe("scoreboard.enabled", true)) return;
+
         Player p = board.getPlayer();
 
         board.updateLines(
-                "§4§l==========================",
-                center("§5§l- • " + p.getName() + " • -"),
-                "",
-                "§4§l☠ Deaths: §r" + p.getStatistic(Statistic.DEATHS),
-                "§4§lWools: §r" + StygianGates.safeInt(p.getUniqueId() + "woolsObtained", 0),
-                "",
-                "§6§lGold: §r" + StygianGates.safeInt(p.getUniqueId() + "gold", 0),
-                "",
-                "§5§lTime Played: §r" + formatPlaytime(p.getStatistic(Statistic.PLAY_ONE_MINUTE)),
-                "§4§l=========================="
+                placeholders(p, StygianGates.safe("scoreboard.display", StygianGates.DEFAULT_SCOREBOARD))
         );
-    }
-
-    public static String center(String s) {
-        String spaces = " ".repeat((30 - s.length()) / 2);
-        return spaces + s + spaces;
     }
 
     public static String formatPlaytime(int ticks) {
@@ -49,6 +42,23 @@ public class ScoreboardUtil {
         int seconds = totalSeconds % SECONDS_IN_MINUTE;
 
         return (months == 0 ? "" : months + "mt ") + (days == 0 ? "" : days + "d ") + (hours == 0 ? "" : hours + "h ") + (minutes == 0 ? "" : minutes + "m ") + (seconds == 0 ? "" : seconds + "s");
+    }
+
+    public static String placeholders(Player p, String input) {
+        return input
+                .replace("{playerName}", p.getName())
+                .replace("{playerDeaths}", ""+p.getStatistic(Statistic.DEATHS))
+                .replace("{playerWools}", ""+(int)StygianGates.safe(p.getUniqueId() + "woolsObtained", 0))
+                .replace("{playerGold}", ""+(int)StygianGates.safe(p.getUniqueId() + "gold", 0))
+                .replace("{playerPlaytime}", formatPlaytime(p.getStatistic(Statistic.PLAY_ONE_MINUTE)));
+    }
+
+    public static List<String> placeholders(Player p, List<String> input) {
+        List<String> a = new ArrayList<>();
+
+        for (String s : input) a.add(placeholders(p, s));
+
+        return a;
     }
 
     private static int div(double dividend, double divisor) {

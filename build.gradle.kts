@@ -16,7 +16,7 @@ dependencies {
 }
 
 group = "dev.ng5m"
-version = "1.5.3.4"
+version = "1.5.4.0"
 description = "desc"
 java.sourceCompatibility = JavaVersion.VERSION_17
 
