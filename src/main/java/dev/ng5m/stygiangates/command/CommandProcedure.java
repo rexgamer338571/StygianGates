@@ -3,6 +3,7 @@ package dev.ng5m.stygiangates.command;
 import dev.ng5m.stygiangates.StygianGates;
 import dev.ng5m.stygiangates.event.PlayerMoveHandler;
 import dev.ng5m.stygiangates.magic.ParticleRay;
+import dev.ng5m.stygiangates.npc.NPC;
 import dev.ng5m.stygiangates.util.*;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextColor;
@@ -173,7 +174,7 @@ public class CommandProcedure implements CommandExecutor {
 
                 switch (args[1]) {
                     case "create" -> {
-                        NPCUtil.add(NPCUtil.create(args[2], args[3], player.getLocation()));
+                        NPCUtil.add(new NPC(args[2], args[3], player.getLocation()));
                     }
 
                     case "remove" -> {
