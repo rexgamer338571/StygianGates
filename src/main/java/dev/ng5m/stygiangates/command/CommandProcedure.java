@@ -138,6 +138,8 @@ public class CommandProcedure implements CommandExecutor {
 
             // DANGER END
 
+            // new names start
+
             case "packet" -> {
                 Player p = args[2].equals("@p") && sender instanceof CommandBlock commandBlock ? Bukkit.getPlayer(getNearestPlayer(commandBlock.getLocation())) : Bukkit.getPlayer(args[2]);
 
@@ -165,6 +167,22 @@ public class CommandProcedure implements CommandExecutor {
                     }
                 }
             }
+
+            case "npc" -> {
+                if (!(sender instanceof Player player)) return true;
+
+                switch (args[1]) {
+                    case "create" -> {
+                        NPCUtil.add(NPCUtil.create(args[2], args[3], player.getLocation()));
+                    }
+
+                    case "remove" -> {
+                        NPCUtil.remove(args[2]);
+                    }
+                }
+            }
+
+            // new names end
 
             case "tank1" -> new Tank(Bukkit.getPlayer(args[1]).getLocation());
         }

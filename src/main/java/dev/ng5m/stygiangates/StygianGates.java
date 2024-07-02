@@ -7,13 +7,12 @@ import dev.ng5m.stygiangates.util.Updater;
 import fr.mrmicky.fastboard.FastBoard;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.Statistic;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.*;
 
 public final class StygianGates extends JavaPlugin {
-    public static String NEWEST_VER = "1.5.4.0";
+    public static String NEWEST_VER = "1.5.5";
     private static StygianGates instance;
     public static final Map<UUID, FastBoard> boards = new HashMap<>();
     public static final List<String> DEFAULT_SCOREBOARD = Arrays.asList(
